@@ -16,6 +16,7 @@ Never send, publish, sign, execute imported documents, delete evidence, or decla
 | /inbox | Read the inbox report. |
 | /attention | Read the attention report. |
 | /review-due | Read the review-due report. |
+| /unreviewed-revisions | Find documents changed since their last approved revision. |
 | /missing-files | Read the missing-files report. |
 | /duplicates | Read the duplicates report. |
 | /retention | Read the retention report. |

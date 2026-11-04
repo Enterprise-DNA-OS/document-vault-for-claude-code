@@ -12,6 +12,7 @@ export const reads={
  inbox:"SELECT code,title,class,owner FROM documents WHERE status='active' AND (class='Unfiled' OR owner='') ORDER BY code",
  attention:"SELECT code,title,owner,reason,review_on FROM attention_queue ORDER BY review_on NULLS FIRST,code,reason",
  'review-due':"SELECT code,title,owner,current_version,review_on,review_decision FROM document_position WHERE status='active' AND (review_on IS NULL OR review_on<=current_date+7) ORDER BY review_on NULLS FIRST,code",
+ 'unreviewed-revisions':"SELECT d.code,d.title,d.current_version,max(r.version) AS last_approved_version FROM documents d JOIN revisions r ON r.document_id=d.id JOIN reviews v ON v.revision_id=r.id AND v.decision='approved' WHERE d.status='active' GROUP BY d.id HAVING max(r.version)<d.current_version ORDER BY d.code",
  'missing-files':"SELECT code,title,source_key,current_version FROM document_position WHERE file_count=0 ORDER BY code",
  duplicates:'SELECT example_file,documents,codes,sha256 FROM duplicate_files ORDER BY codes',
  retention:"SELECT code,title,record_kind,period_end,retain_until,hold_reason FROM documents WHERE retain_until<=current_date OR hold_reason<>'' ORDER BY retain_until,code",

@@ -37,6 +37,7 @@ try{
  check((await call(['documents'])).find(x=>x.code==='DOC-101').review_decision==='approved');
  await call(['revise','DOC-101','--expected=1','--title=Supplier agreement revised','--actor=Pat','--note=Corrected title']);
  check((await call(['documents'])).find(x=>x.code==='DOC-101').review_decision===null);
+ check((await call(['unreviewed-revisions'])).some(x=>x.code==='DOC-101'&&x.last_approved_version===1&&x.current_version===2));
  await fails(['revise','DOC-101','--expected=1','--actor=Pat','--note=Stale editor'],/Revision changed/);
  await fails(['review','DOC-101','--expected=1','--decision=approved','--note=Old','--next-review='+future,'--actor=Pat'],/Revision changed/);
  await fails(['review','DOC-101','--expected=2','--decision=approved','--note=Old','--next-review=2020-01-01','--actor=Pat'],/future/);

@@ -17,7 +17,7 @@
   },
   {
     "question": "Which documents have changed since their last approval?",
-    "command": "npm run vault -- documents"
+    "command": "npm run vault -- unreviewed-revisions"
   },
   {
     "question": "Which personal records lack a purpose or a review date?",
@@ -36,7 +36,7 @@
     "command": "npm run vault -- activity"
   },
   {
-    "question": "Which current text files mention delivery evidence?",
-    "command": "npm run vault -- search delivery evidence"
+    "question": "Which current text documents mention insurance?",
+    "command": "npm run vault -- search insurance"
   }
 ]

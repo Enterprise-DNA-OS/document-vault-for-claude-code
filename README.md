@@ -43,6 +43,7 @@ M-Files also supplies Office editing, OCR, external sharing, permissions and wor
 | /inbox | Read the inbox report. |
 | /attention | Read the attention report. |
 | /review-due | Read the review-due report. |
+| /unreviewed-revisions | Find documents changed since their last approved revision. |
 | /missing-files | Read the missing-files report. |
 | /duplicates | Read the duplicates report. |
 | /retention | Read the retention report. |
@@ -65,7 +66,7 @@ M-Files also supplies Office editing, OCR, external sharing, permissions and wor
 | /customise | Add a field, rename a class or change a rule with a tested migration. |
 | /new-view | Add a branded read-only report from the existing records. |
 
-There are 23 CLI commands and 25 slash commands. Every CLI command accepts --json. Flags use --name=value. Document selectors accept exact codes, id prefixes or case-insensitive titles. Ambiguous selectors list candidates and exit 1.
+There are 24 CLI commands and 26 slash commands. Every CLI command accepts --json. Flags use --name=value. Document selectors accept exact codes, id prefixes or case-insensitive titles. Ambiguous selectors list candidates and exit 1.
 
 ## Ten questions your records answer
 
@@ -73,12 +74,12 @@ There are 23 CLI commands and 25 slash commands. Every CLI command accepts --jso
 2. Which current revisions have no original file attached? (`npm run vault -- missing-files`)
 3. Which reviews are overdue or due this week? (`npm run vault -- review-due`)
 4. Which different records contain identical current files? (`npm run vault -- duplicates`)
-5. Which documents have changed since their last approval? (`npm run vault -- documents`)
+5. Which documents have changed since their last approval? (`npm run vault -- unreviewed-revisions`)
 6. Which personal records lack a purpose or a review date? (`npm run vault -- compliance`)
 7. Which tax records have retention dates shorter than our seven-year check? (`npm run vault -- compliance`)
 8. Which records are past their retention date but still have a hold? (`npm run vault -- retention`)
 9. Who filed, revised or reviewed a document? (`npm run vault -- activity`)
-10. Which current text files mention delivery evidence? (`npm run vault -- search delivery evidence`)
+10. Which current text documents mention insurance? (`npm run vault -- search insurance`)
 
 These questions run against the supplied database today. They are not a claim that M-Files cannot answer them. Your own joined records and business rules make the analysis yours.
 
