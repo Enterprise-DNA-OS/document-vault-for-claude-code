@@ -1,13 +1,40 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Document Vault for Claude Code: what needs attention, rendered by npm run view",
+    "title": "Document desk this week",
     "sections": [
       {
         "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "sql": "SELECT code,title,owner,reason,review_on FROM attention_queue ORDER BY review_on NULLS FIRST,code"
+      },
+      {
+        "title": "Reviews due",
+        "sql": "SELECT code,title,owner,current_version,review_on FROM document_position WHERE status='active' AND (review_on IS NULL OR review_on<=current_date+7) ORDER BY review_on NULLS FIRST,code"
+      }
+    ]
+  },
+  {
+    "name": "filing",
+    "title": "Document filing and duplication",
+    "sections": [
+      {
+        "title": "Filing register",
+        "sql": "SELECT code,title,class,owner,current_version,file_count,review_decision FROM document_position ORDER BY code"
+      },
+      {
+        "title": "Identical current files",
+        "sql": "SELECT example_file,documents,codes FROM duplicate_files ORDER BY codes"
+      }
+    ]
+  },
+  {
+    "name": "compliance",
+    "title": "Document retention review",
+    "sections": [
+      {
+        "title": "Evidence checks",
+        "note": "Record checks only. A qualified owner decides retention and disposal. Nothing is deleted.",
+        "sql": "SELECT code,rule,finding FROM compliance_findings ORDER BY code,rule"
       }
     ]
   }

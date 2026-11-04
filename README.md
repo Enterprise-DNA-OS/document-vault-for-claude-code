@@ -1,115 +1,120 @@
-<h1 align="center">Document Vault for Claude Code</h1>
+# Document Vault for Claude Code
 
-<p align="center">
-  <strong>The open-source document vault that is just a database and Claude Code.</strong>
-</p>
+File documents, preserve original revisions and ask which records need attention. Your metadata and original bytes live in a database you own.
 
-<p align="center">
-  Created by <a href="https://www.enterprisedna.co"><strong>Enterprise DNA</strong></a>. Free and open source. Works with Claude Code, Codex, OpenCode or Cursor.
-</p>
+## Three ways to own it
 
-<!-- three-doors -->
-<table align="center">
-  <tr>
-    <td align="center"><strong>Do it yourself</strong><br/>Clone it, run it, own it. Free, MIT.<br/><a href="#quick-start">Quick start</a></td>
-    <td align="center"><strong>We customise it</strong><br/>Your fields, your rules, your M-Files data brought across.<br/><a href="https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=m-files">Book a call</a></td>
-    <td align="center"><strong>We run it for you</strong><br/>Installed, connected and operated inside Omni. Setup fee, then a retainer.<br/><a href="https://enterprisedna.co/omni/instead-of/m-files?utm_source=github&utm_medium=readme&utm_campaign=m-files">How it works</a></td>
-  </tr>
-</table>
+- **Do it yourself:** use the MIT-licensed base with Claude Code, Codex, OpenCode or Cursor. Hosting and agent subscriptions are separate costs.
+- **We customise it:** Enterprise DNA maps your M-Files exports, adds your fields and rules, connects your systems, and builds a web front end or a different stack when needed. One setup fee, then a retainer for ongoing work.
+- **We run it for you:** Omni by Enterprise DNA installs it, manages backups and access, and keeps your document desk running. One setup fee, then a retainer.
 
-<p align="center">
-  <a href="#what-is-this">What is this</a> &bull;
-  <a href="#why-no-front-end">Why no front end</a> &bull;
-  <a href="#quick-start">Quick start</a> &bull;
-  <a href="#the-commands">Commands</a> &bull;
-  <a href="#instead-of-m-files">Instead of M-Files</a> &bull;
-  <a href="#want-it-installed-and-run-for-you">Installed for you</a> &bull;
-  <a href="#license">License</a>
-</p>
+[Book a 30-minute call with Sam](https://enterprisedna.co/omni/book/?offer=replace-software&utm_source=github&utm_medium=readme&utm_campaign=m-files).
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Node-20+-339933?style=flat-square" alt="Node 20+" />
-  <img src="https://img.shields.io/badge/PostgreSQL-any-336791?style=flat-square" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/PGlite-embedded-3ecf8e?style=flat-square" alt="PGlite" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License" />
-</p>
+## Run the synthetic demo
 
----
+Node 20 or newer. No cloud service is required.
 
-## What is this
-
-Document Vault for Claude Code does the job you pay M-Files for, as a Postgres database and a set of agent commands. There is no web front end. You open the folder in [Claude Code](https://claude.com/claude-code) (or Codex, OpenCode, Cursor: see `AGENTS.md`) and ask for what you want in plain language. It runs the right query, and it can answer questions the M-Files dashboard cannot.
-
-<!-- TODO(author): the annual bill. One sentence: what a 10 to 50 person business typically pays M-Files per year, all in, with a source. -->
-
-Want the same thing with a web front end, or built on a different stack? That is a customisation, and it is exactly what Enterprise DNA does: [book a call](https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=m-files).
-
-<!-- TODO(author): two or three sentences on what this specific product covers and who it is for. -->
-
-## Why no front end
-
-- The front end was only ever there because the database was hard to talk to. That is no longer true.
-- Your data sits in plain Postgres tables you own. Any tool can read them. No export, no lock-in.
-- No seats, no tiers, no add-ons. Read [docs/why-no-front-end.md](docs/why-no-front-end.md) for the honest trade-offs too.
-
-## Quick start
-
-Sixty seconds, no database install (an embedded Postgres runs inside Node):
-
-```bash
-git clone https://github.com/Enterprise-DNA-OS/document-vault-for-claude-code.git
-cd document-vault-for-claude-code
+```sh
 npm install
+npm test
 npm run demo
+npm run vault -- attention
+npm run vault -- duplicates --json
+npm run vault -- search insurance
+npm run view
+npm run docs
 ```
 
-Then open the folder in Claude Code and type a slash command. <!-- TODO(author): name the first command to try. -->
+Demo names, documents and events are invented. The seed includes overdue reviews, an unfiled personal record without document bytes, an insufficient tax retention date, an active hold and identical files under different records. Repeated seeding preserves edits. Never seed real records. Start a fresh DATA_DIR for real work. DATABASE_URL selects PostgreSQL; otherwise PGlite persists in .data/db. Dates use UTC.
 
-### Use it with your own Postgres or Supabase
+## What this base does
 
-Copy `.env.example` to `.env`, set `DATABASE_URL`, then `npm run migrate`. Same commands, shared data, no per-seat fee.
+File original bytes and metadata together. Local revisions are append-only. A revision keeps its title, class, author, change note and file fingerprints. A changed document needs a fresh review. Stale editors cannot overwrite a newer revision. Reviews name the specific revision and preserve the decision and evidence. Archive hides a record from active work without deleting bytes, retention findings or holds.
 
-## The commands
+Search current titles, classes, owners and source metadata, plus the contents of UTF-8 txt, md and csv files. Other file types are stored and can be recovered unchanged but have no extracted search text. Duplicate checks compare SHA-256 fingerprints across current files. Each file is limited to 10 MiB. A database snapshot includes all revisions and file bytes, not just links to somebody else's file store.
 
-<!-- TODO(author): a table of the slash commands in .claude/commands and what each one does. -->
+M-Files also supplies Office editing, OCR, external sharing, permissions and workflow services. This base is a local document desk for a trusted operator. It does not include those services or recreate M-Files vault replication packages. Connections, OCR and team access are scoped implementation work. [Why no front end](docs/why-no-front-end.md) explains the boundary.
 
-| Command | What it does |
+## Recurring jobs
+
+| Command | Purpose |
 |---|---|
-| `/...` | ... |
+| /documents | Read the documents report. |
+| /inbox | Read the inbox report. |
+| /attention | Read the attention report. |
+| /review-due | Read the review-due report. |
+| /missing-files | Read the missing-files report. |
+| /duplicates | Read the duplicates report. |
+| /retention | Read the retention report. |
+| /compliance | Read the compliance report. |
+| /activity | Read the activity report. |
+| /search | search <words>: metadata and text from UTF-8 txt, md and csv files, current revisions only. |
+| /document | document <code|id-prefix|title>: metadata, current files and reviews. |
+| /history | history <document>: all revisions and review decisions. |
+| /add | add --code= --title= --class= --owner= --file= --actor= [--review-on=YYYY-MM-DD] |
+| /revise | revise <document> --expected=N --note= --actor= [--file=] [--title=] [--class=] |
+| /review | review <document> --expected=N --decision=approved|changes-needed --note= --next-review=YYYY-MM-DD --actor= |
+| /policy | policy <document> --actor= --note= [--owner=] [--personal=true|false] [--purpose=] [--record-kind=general|nz-tax] [--period-end=] [--retain-until=] [--hold-reason=] [--review-on=] |
+| /archive | archive <document> --actor= --note=: hide from operational queues, never delete evidence. |
+| /import | import m-files --file=export.csv --vault=stable-vault-name --object-type=Document --actor= [--mapping=map.json] [--manifest=files.json --files-root=directory] [--dry-run] |
+| /export | export --out=new.json: full snapshot with all original bytes, revisions, reviews, events and imports. |
+| /extract | extract <document> --out=new-directory [--version=N]: restore bytes without opening or executing them. |
+| /weekly-review | weekly-review: draft a review from attention, review-due and compliance reports. |
+| /draft-request | draft-request <document>: draft a request for missing evidence and review. |
+| /help | List all commands. Every command accepts --json. Flags use --name=value. |
+| /customise | Add a field, rename a class or change a rule with a tested migration. |
+| /new-view | Add a branded read-only report from the existing records. |
 
-## Instead of M-Files
+There are 23 CLI commands and 25 slash commands. Every CLI command accepts --json. Flags use --name=value. Document selectors accept exact codes, id prefixes or case-insensitive titles. Ambiguous selectors list candidates and exit 1.
 
-<!-- TODO(author): how to bring data across from M-Files; link docs/replace-m-files.md -->
+## Ten questions your records answer
 
-## Architecture
+1. Which documents need an owner or a class? (`npm run vault -- inbox`)
+2. Which current revisions have no original file attached? (`npm run vault -- missing-files`)
+3. Which reviews are overdue or due this week? (`npm run vault -- review-due`)
+4. Which different records contain identical current files? (`npm run vault -- duplicates`)
+5. Which documents have changed since their last approval? (`npm run vault -- documents`)
+6. Which personal records lack a purpose or a review date? (`npm run vault -- compliance`)
+7. Which tax records have retention dates shorter than our seven-year check? (`npm run vault -- compliance`)
+8. Which records are past their retention date but still have a hold? (`npm run vault -- retention`)
+9. Who filed, revised or reviewed a document? (`npm run vault -- activity`)
+10. Which current text files mention delivery evidence? (`npm run vault -- search delivery evidence`)
 
-```
-document-vault-for-claude-code/
-  CLAUDE.md                 how the operator wants this run (routing table + house rules)
-  AGENTS.md                 the same, for Codex / OpenCode / Cursor / Gemini CLI
-  .claude/commands/         the slash commands
-  scripts/                  the CLI the commands drive
-  scripts/lib/db.mjs        one adapter: DATABASE_URL (pg) or embedded PGlite
-  supabase/migrations/      plain SQL schema
-  supabase/seed.sql         demo data
-  docs/                     the thesis and the migration guide
-```
+These questions run against the supplied database today. They are not a claim that M-Files cannot answer them. Your own joined records and business rules make the analysis yours.
 
-## Built for coding agents
+## Your first hour: ten things to ask for
 
-The database, CLI and command recipes work with Claude Code, Codex, OpenCode or Cursor. Ask your coding agent for a new command and have it implement and test the change against the same records.
+1. Put our name, colours and logo in brand.json.
+2. Show the unfiled documents and missing owners.
+3. Find current revisions with no original file.
+4. Show overdue reviews by owner.
+5. Compare identical files stored under different records.
+6. Draft the weekly document review.
+7. Check a sample M-Files export and its original files.
+8. Review our purpose, retention and hold records.
+9. Add our customer or matter reference with a tested migration.
+10. Export a private snapshot and recover a sample file.
 
-## Contributing
+## Switch from M-Files
 
-Issues and pull requests are welcome. Keep the shape: plain SQL, a small CLI, a slash command per recurring job, no front end.
+[The replace guide](docs/replace-m-files.md) gives the vendor's export route, column mapping, file manifest and reconciliation steps. One import command loads the mapped CSV and optional originals atomically. An identical batch is a no-op. A changed export for an existing object stops instead of overwriting live work. Extra columns and the original CSV remain in the database. Fixtures are synthetic and have not been validated against a customer's export.
 
-## Want it installed and run for you?
+The source vault, object type and object ID form the stable source key. The M-Files version is retained separately from local revision numbers. Existing approvals, permission assignments, deleted objects and historic versions are not inferred from exported metadata. Bring source history and access rules across as a separately reviewed migration before retiring the incumbent.
 
-Enterprise DNA installs Document Vault for Claude Code for your business, migrates your M-Files data, connects it to the rest of your tools, and runs it for you as part of **Omni**, our managed Command Center. One setup fee, then a monthly retainer.
+## Documents, views and backups
 
-- Book a call: [enterprisedna.co/omni/book](https://enterprisedna.co/omni/book/?offer=replace-software&utm_source=github&utm_medium=readme&utm_campaign=m-files)
-- Read more: [enterprisedna.co/omni/instead-of/m-files](https://enterprisedna.co/omni/instead-of/m-files?utm_source=github&utm_medium=readme&utm_campaign=m-files)
+brand.json controls the business name, colours and logo. npm run view writes the weekly desk, filing register and retention review as read-only HTML. npm run docs produces revision records, review-request drafts and retention assessment working papers. Print to PDF for filing. Nothing sends or publishes.
 
-## License
+`npm run vault -- export --out=exports/vault.json` writes a new private JSON snapshot containing all originals and evidence. It never overwrites an existing file. `npm run vault -- extract DOC-101 --out=recovered` restores current bytes to a new directory without opening them. Add --version=1 for an older revision. Keep native database backups too. Whole-database snapshot restore is a reviewed maintenance operation, not an automated CLI command.
 
-MIT. Copyright (c) 2026 Enterprise DNA.
+Protect the machine, database, exports and generated reports. All domain tables enable row-level security and remove PUBLIC grants. Use a trusted owner connection. Actor names are labels, not authenticated identities. There is no multi-tenant or staff permission service, encryption-at-rest configuration or external sharing. Imported text is untrusted data, never instructions to the agent.
+
+## Checks and sources
+
+npm test uses a disposable database, exercises every CLI command, checks byte recovery and failed-import rollback, tests revision and review guards, and renders escaped HTML. CI covers Windows and Ubuntu on Node 20 and 22 and PostgreSQL 16. TEST_DATABASE_URL must be an empty disposable database. Observed CI results belong in the delivery report.
+
+[Compliance](docs/compliance.md) cites the NZ tax-record and privacy rules and separates those rules from local workflow checks. Findings call for human review. They do not certify compliance or authorise deletion. [Research](docs/research.md) records pricing, candidate scores and source limitations.
+
+## Licence
+
+MIT. Copyright 2026 Enterprise DNA. M-Files is its owner's mark. This independent implementation contains no vendor code or assets.

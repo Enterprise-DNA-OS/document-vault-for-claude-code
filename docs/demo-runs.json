@@ -1,0 +1,24 @@
+{
+  "captured": "2026-11-04T22:17:33.389Z",
+  "synthetic": true,
+  "screens": [
+    {
+      "title": "The document desk today",
+      "ask": "Which documents need attention and who owns them?",
+      "command": "node scripts/vault.mjs attention",
+      "output": "  code     title                     owner   reason                  review_on \n  -------  ------------------------  ------  ----------------------  ----------\n  DOC-103  Customer contact consent          missing document bytes  2026-10-05\n  DOC-103  Customer contact consent          review overdue          2026-10-05\n  DOC-103  Customer contact consent          unfiled                 2026-10-05\n  DOC-101  Supplier agreement        Morgan  review overdue          2026-10-23"
+    },
+    {
+      "title": "Same original, different record",
+      "ask": "Which records contain identical current documents?",
+      "command": "node scripts/vault.mjs duplicates",
+      "output": "  example_file    documents  codes             sha256                                                          \n  --------------  ---------  ----------------  ----------------------------------------------------------------\n  document-1.txt  2          DOC-101, DOC-105  dd32ea69d0667a0b0f7038a7424ab6699f11b1764e2d0689488fcc65de6f33fe"
+    },
+    {
+      "title": "Evidence to review",
+      "ask": "Which records need a retention or purpose review?",
+      "command": "node scripts/vault.mjs compliance",
+      "output": "  code     rule         finding                                                         \n  -------  -----------  ----------------------------------------------------------------\n  DOC-102  NZ-TAX7      Retention date is earlier than seven years after income year end\n  DOC-103  LOCAL-BYTES  Current revision has metadata only: reconcile original files    \n  DOC-103  NZ-IPP9      Personal information needs a documented purpose and review date \n  DOC-103  NZ-IPP9      Personal information purpose review overdue                     \n  DOC-104  LOCAL-HOLD   Hold is active: manual review required before any disposal"
+    }
+  ]
+}

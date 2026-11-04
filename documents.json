@@ -1,11 +1,63 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
-    "file": "name",
+    "name": "revision-certificate",
+    "title": "Document revision record",
+    "for_each": "SELECT id,code FROM documents ORDER BY code",
+    "file": "code",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      {
+        "title": "Current document",
+        "layout": "record",
+        "sql": "SELECT code,title,class,owner,current_version,review_decision,review_on FROM document_position WHERE id=$1"
+      },
+      {
+        "title": "Revision evidence",
+        "sql": "SELECT version,title,note,actor,created_at FROM revisions WHERE document_id=$1 ORDER BY version"
+      },
+      {
+        "title": "Current file fingerprints",
+        "sql": "SELECT f.name,f.sha256,f.byte_size FROM files f JOIN revisions r ON r.id=f.revision_id JOIN documents d ON d.id=r.document_id AND d.current_version=r.version WHERE d.id=$1 ORDER BY f.name"
+      }
+    ]
+  },
+  {
+    "name": "review-request",
+    "title": "Document review request draft",
+    "for_each": "SELECT id,code FROM document_position WHERE status='active' AND (review_on IS NULL OR review_on<=current_date+7) ORDER BY code",
+    "file": "code",
+    "sections": [
+      {
+        "title": "Review this revision",
+        "note": "Internal draft. Check the original files before recording a decision. Nothing sent.",
+        "layout": "record",
+        "sql": "SELECT code,title,owner,current_version,file_count,review_on FROM document_position WHERE id=$1"
+      },
+      {
+        "title": "Outstanding record checks",
+        "sql": "SELECT rule,finding FROM compliance_findings WHERE id=$1 ORDER BY rule"
+      }
+    ]
+  },
+  {
+    "name": "retention-assessment",
+    "title": "Retention assessment working paper",
+    "for_each": "SELECT id,code FROM documents ORDER BY code",
+    "file": "code",
+    "sections": [
+      {
+        "title": "Recorded policy",
+        "layout": "record",
+        "sql": "SELECT code,title,personal,purpose,record_kind,period_end,retain_until,hold_reason FROM documents WHERE id=$1"
+      },
+      {
+        "title": "Findings",
+        "note": "No disposal authorisation. Preserve active holds and reconcile applicable legal duties.",
+        "sql": "SELECT rule,finding FROM compliance_findings WHERE id=$1 ORDER BY rule"
+      },
+      {
+        "title": "Policy decisions",
+        "sql": "SELECT actor,detail,created_at FROM events WHERE document_id=$1 AND action='policy-reviewed' ORDER BY created_at"
+      }
     ]
   }
 ]

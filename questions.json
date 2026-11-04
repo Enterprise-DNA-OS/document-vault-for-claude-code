@@ -1,0 +1,42 @@
+[
+  {
+    "question": "Which documents need an owner or a class?",
+    "command": "npm run vault -- inbox"
+  },
+  {
+    "question": "Which current revisions have no original file attached?",
+    "command": "npm run vault -- missing-files"
+  },
+  {
+    "question": "Which reviews are overdue or due this week?",
+    "command": "npm run vault -- review-due"
+  },
+  {
+    "question": "Which different records contain identical current files?",
+    "command": "npm run vault -- duplicates"
+  },
+  {
+    "question": "Which documents have changed since their last approval?",
+    "command": "npm run vault -- documents"
+  },
+  {
+    "question": "Which personal records lack a purpose or a review date?",
+    "command": "npm run vault -- compliance"
+  },
+  {
+    "question": "Which tax records have retention dates shorter than our seven-year check?",
+    "command": "npm run vault -- compliance"
+  },
+  {
+    "question": "Which records are past their retention date but still have a hold?",
+    "command": "npm run vault -- retention"
+  },
+  {
+    "question": "Who filed, revised or reviewed a document?",
+    "command": "npm run vault -- activity"
+  },
+  {
+    "question": "Which current text files mention delivery evidence?",
+    "command": "npm run vault -- search delivery evidence"
+  }
+]
